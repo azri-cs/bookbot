@@ -1,31 +1,31 @@
-def calc_words(text):
-	return len(text.split())
+from stats import calc_words, get_list_of_dictionaries
+import sys
 
-def calc_characters(text):
-	char_counts = {}
-	lowered_text = text.lower()
-	for char in lowered_text:
-		if char in char_counts:
-			char_counts[char] += 1
-		else:
-			char_counts[char] = 1
-	return char_counts
+def print_help():
+	print("Usage: python3 main.py <path_to_book>")
 
-def print_reports(words_count, chars_dict):
-	print("--- Begin report of books/frankenstein.txt ---")
-	print(words_count," words found in the document")
-	chars_tuples = chars_dict.items()
-	sorted_chars = sorted(chars_dict.items(), key=lambda item: item[1], reverse=True)
+def print_reports(file_contents, file_path):
+	print("============ BOOKBOT ============")
+	print(f"Analyzing book found at {file_path}...")
+	print("----------- Word Count ----------")
+	print("Found", calc_words(file_contents), "total words")
+	print("--------- Character Count -------")
+	sorted_chars = get_list_of_dictionaries(file_contents)
+
 	for char,count in sorted_chars:
 		if char.isalpha():
-			print(f"The '{char}' character was found {count} times")
+			print(f"{char}: {count}")
+
+	print("============= END ===============")
 
 def main():
-	with open("books/frankenstein.txt") as f:
-    		file_contents = f.read()
-	# print(file_contents)
-	num_of_words = calc_words(file_contents)
-	num_of_chars = calc_characters(file_contents)
-	print_reports(num_of_words, num_of_chars)
+	if len(sys.argv) == 1:
+		print_help()
+		sys.exit(1)
+	else:
+		file_path = sys.argv[1]
+		with open(file_path) as f:
+    			file_contents = f.read()
+		print_reports(file_contents, file_path)
 
 main()
